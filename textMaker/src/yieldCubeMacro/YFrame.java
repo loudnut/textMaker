@@ -60,7 +60,6 @@ public class YFrame extends JFrame {
 	List<ButtonGroup> sigmaItemComboBoxGroup = new ArrayList<ButtonGroup>();
 	List<JTextField> sigmaItemOther = new ArrayList<JTextField>();
 	private String[] sigmaItemMenu = {"THK Mean","THK Range", "CD Mean", "CD StdDev", "Other"};
-	private JTextField textPatchString;
 
 	
 
@@ -334,23 +333,9 @@ public class YFrame extends JFrame {
 		panel_1.add(textMeaStepNameProd, "cell 3 1,growx");
 		textMeaStepNameProd.setColumns(10);
 		
-		JButton btnGlobalQuery = new JButton("Global Query");
-		btnGlobalQuery.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				textMacroProd.setText("");
-				TextProcessor pp = new TextProcessor(textProcessStepNameProd.getText(), textMeaStepNameProd.getText(), sigmaItemCount,
-			sigmaItem, sigmaItemComboBox, sigmaItemOther, textPatchString.getText());
-				textMacroProd.setText(pp.makeMacroProdGq());
-			}
-		});
-		panel_1.add(btnGlobalQuery, "cell 4 1,growx");
-		
 		
 		textMacroProd.setText("");
 		panel_1.add(textMacroProd, "cell 5 1 1 11,grow");
-		
-		JLabel lblPatchString = new JLabel("patch string");
-		panel_1.add(lblPatchString, "flowx,cell 4 2");
 		
 		JLabel lblYItem = new JLabel("Yield3 Item Name");
 		panel_1.add(lblYItem, "flowx,cell 2 3,alignx center");
@@ -387,7 +372,7 @@ public class YFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				textMacroProd.setText("");
 				TextProcessor pp = new TextProcessor(textProcessStepNameProd.getText(), textMeaStepNameProd.getText(), sigmaItemCount,
-			sigmaItem, sigmaItemComboBox, sigmaItemOther, textPatchString.getText());
+			sigmaItem, sigmaItemComboBox, sigmaItemOther);
 				textMacroProd.setText(pp.makeMacroProd());
 			}
 		});
@@ -413,10 +398,6 @@ public class YFrame extends JFrame {
 			}
 		});
 		panel_1.add(btnClearAll_1, "cell 5 0,alignx left");
-		
-		textPatchString = new JTextField();
-		panel_1.add(textPatchString, "cell 4 2");
-		textPatchString.setColumns(10);
 		
 		
 		

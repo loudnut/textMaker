@@ -49,10 +49,9 @@ public class TextProcessor {
 	private List<JTextField> sigmaItem;
 	private List<JComboBox> sigmaItemComboBox;
 	private List<JTextField> sigmaItemOther;
-	private String textPatchString;
 	
 	public TextProcessor(String textProcessStepNameProd, String textMeaStepNameProd, int sigmaItemCount,
-			List<JTextField> sigmaItem, List<JComboBox> sigmaItemComboBox, List<JTextField> sigmaItemOther, String textPatchString) {
+			List<JTextField> sigmaItem, List<JComboBox> sigmaItemComboBox, List<JTextField> sigmaItemOther) {
 		super();
 		this.textProcessStepNameProd = textProcessStepNameProd;
 		this.textMeaStepNameProd = textMeaStepNameProd;
@@ -60,7 +59,6 @@ public class TextProcessor {
 		this.sigmaItem = sigmaItem;
 		this.sigmaItemComboBox = sigmaItemComboBox;
 		this.sigmaItemOther = sigmaItemOther;
-		this.textPatchString = textPatchString;
 	}
 
 	public TextProcessor(String strProcessStepName_15, String strProcessStepName_16, String strMeaStepName_15,
@@ -200,8 +198,6 @@ public class TextProcessor {
 		macro.append("SaveFile {\n\tAppend=Suffix,\n\tFormat=\"yyyyMMddHHmm\",\n\tFilename=\"C:\\MTApps\\IS_Frontend\\Yield3\\YDS Files\\" + textProcessStepNameProd + " - Prod_.yds\",\n};\nSortColumns {\n\tParameters=\n\t\t\"" + textProcessStepNameProd + "::RunData::MfgFacilityId , ASC\",\n\t\t\"" + textProcessStepNameProd + "::RunData::ProcessEndDateTime , ASC\",\n};\nRenameColumn {\n\tToColumn=\"Time\",\n\tFromColumn=\"" + textProcessStepNameProd + "::RunData::ProcessEndDateTime\",\n};\n");
 		
 		
-		if (textPatchString.equalsIgnoreCase(""))
-			textPatchString = "Product::Raw Data";
 		
 		for (int i = 1; i <= sigmaItemCount; i++){
 			StringBuffer sigmaItemBf = new StringBuffer(sigmaItem.get(i * 2 - 2).getText());
