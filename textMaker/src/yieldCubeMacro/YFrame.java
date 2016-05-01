@@ -76,6 +76,7 @@ public class YFrame extends JFrame {
 		System.out.println("LOG: v1.2 Implemented copyToClipbaord btn\n\tnot suitable for 4R,4L");
 		System.out.println("LOG: v2.0 Setup Prod tab");
 		System.out.println("LOG: v2.1 Change the position of clearAll btn");
+		System.out.println("Implementing version control");
 		
 //		test to input system fuction in y3
 //		StringBuffer test = new StringBuffer("CD1 Space Bot DF - DG_CV (Mean)");
