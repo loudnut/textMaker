@@ -53,6 +53,8 @@ public class YFrame extends JFrame {
 	private JTextField textField_3;
 	private JTextField textCustomItem;
 	
+	JTextArea textMacroChartScale = new JTextArea();
+	
 	final JTextArea textMacroProd = new JTextArea();
 	final JLabel lblCopied = new JLabel("");
 	List<JTextField> sigmaItem = new ArrayList<JTextField>();
@@ -61,6 +63,9 @@ public class YFrame extends JFrame {
 	List<JTextField> sigmaItemOther = new ArrayList<JTextField>();
 	private String[] sigmaItemMenu = {"THK Mean","THK Range", "CD Mean", "CD StdDev", "Other"};
 
+	JPopupMenu popup = new JPopupMenu();
+	private JTextField textNewControlLimit;
+	JLabel label_1 = new JLabel("");
 	
 
 	/**
@@ -71,12 +76,14 @@ public class YFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public YFrame() {
-		super("YieldCube Macro Maker v2.1 - PEE2 Diffusion");
+		super("YieldCube Macro Maker v2.3 - PEE2 Diffusion");
 		System.out.println("LOG: v1.1 Implemented demo and clearAll btn");
 		System.out.println("LOG: v1.2 Implemented copyToClipbaord btn\n\tnot suitable for 4R,4L");
 		System.out.println("LOG: v2.0 Setup Prod tab");
 		System.out.println("LOG: v2.1 Change the position of clearAll btn");
-		System.out.println("Implementing version control");
+		System.out.println("LOG: v2.2 Applied System Function -> Get data of Y3");
+		System.out.println("LOG: v2.3 Implemented version control");
+		System.out.println("LOG: v2.4 Added Scale Calculation Panel");
 		
 //		test to input system fuction in y3
 //		StringBuffer test = new StringBuffer("CD1 Space Bot DF - DG_CV (Mean)");
@@ -96,15 +103,11 @@ public class YFrame extends JFrame {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane);
 
+		// ##########	Qual panel starts here	##########
 		final JPanel panel = new JPanel();
 		tabbedPane.addTab("Qual THK", null, panel, null);
-
 		
-		
-		
-		
-	    JPopupMenu popup = new JPopupMenu();
-	    JMenuItem item = new JMenuItem(new DefaultEditorKit.CutAction());
+		JMenuItem item = new JMenuItem(new DefaultEditorKit.CutAction());
 	    item.setText("Cut");
 	    popup.add(item);
 	    item = new JMenuItem(new DefaultEditorKit.CopyAction());
@@ -169,9 +172,6 @@ public class YFrame extends JFrame {
 		JButton btnMakeMacro = new JButton("Make Macro");
 		btnMakeMacro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				textMacro.setText("btn is pressed");
-//				String fuck = new String("8401-DF FQDPLYFLM7 QUAL - fuck you");
-//				textMacro.setText("GlobalQuery {");
 				textMacro.setText("");
 				TextProcessor p = new TextProcessor(textProcessStepName_15.getText(),textProcessStepName_16.getText(),textMeaStepName_15.getText(),textMeaStepName_16.getText(),textFilterRecipe.getText(),textThkMean_15.getText(),textThkMean_16.getText(),textThkMeanRefLine.getText(),textThkRange_15.getText(),textThkRange_16.getText(),textThkRangeRefLine.getText(),textTitle.getText(), chckbxXp8Filter.isSelected());
 				textMacro.setText(p.makeMacro());
@@ -210,7 +210,6 @@ public class YFrame extends JFrame {
 		JLabel lblReferenceLinesctrl = new JLabel("Reference Lines (Ctrl Limits)");
 		panel.add(lblReferenceLinesctrl, "cell 2 5,alignx center,aligny bottom");
 
-//		JLabel lblSigmaItem = new JLabel("Sigma Item");
 		JLabel lblThkMean = new JLabel("THK Mean   F15");
 		panel.add(lblThkMean, "flowx,cell 0 6,alignx left");
 		
@@ -225,34 +224,6 @@ public class YFrame extends JFrame {
 		textThkMeanRefLine.setComponentPopupMenu(popup);
 		
 		panel.add(btnMakeMacro, "cell 4 6 1 3,grow");
-
-		
-//		HashMap<JTextField, JTextField> sigmaItem;
-//		above line is related to the unused HashMap method
-
-//		below block is currently hidden to users
-/*		JButton btnAddSigmaItem = new JButton("+");
-		btnAddSigmaItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (sigmaItemCount < 2) {
-
-//					below comment is discarded. issue solved by using List
-//					dynamically add new fields like this:
-//					     .add(y3Item_x = new JTextField(),
-//					or, use a HashMap
-//					http://stackoverflow.com/questions/18275360/create-fields-and-methods-dynamically
-
-					sigmaItem.add(new JTextField());
-					sigmaItem.add(new JTextField());
-					panel.add(sigmaItem.get(++sigmaItemCount * 2 - 2), "cell 1 " + (sigmaItemCount + 3) + ",growx");
-					panel.add(sigmaItem.get(sigmaItemCount * 2 - 1), "cell 2 " + (sigmaItemCount + 3) + ",growx");
-					panel.revalidate();
-					validate();
-				}
-			}
-		});
-		panel.add(btnAddSigmaItem, "cell 0 6");
-*/		
 		
 		JLabel lblThkMeanF = new JLabel("THK Mean   F16");
 		panel.add(lblThkMeanF, "cell 0 7,alignx left,aligny top");
@@ -262,7 +233,6 @@ public class YFrame extends JFrame {
 		textThkMean_16.setColumns(10);
 		textThkMean_16.setComponentPopupMenu(popup);
 	
-		
 		JLabel lblThkRange = new JLabel("THK Range  F15");
 		panel.add(lblThkRange, "cell 0 8,alignx left");
 		
@@ -308,7 +278,10 @@ public class YFrame extends JFrame {
 			}
 		});
 		panel.add(btnClearAll, "cell 6 1,alignx left,aligny top");
-
+		//##########	Qual panel ends here	##########
+		
+		
+		//##########	Prod panel starts here	##########
 		final JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Prod", null, panel_1, null);
 		panel_1.setLayout(new MigLayout("", "[368.00][89.00][300.00][225.00][98.00][323.00][66.00,grow]", "[][][baseline][][][][][][][][baseline][]"));
@@ -329,14 +302,16 @@ public class YFrame extends JFrame {
 		textProcessStepNameProd = new JTextField();
 		panel_1.add(textProcessStepNameProd, "cell 2 1,growx");
 		textProcessStepNameProd.setColumns(10);
+		textProcessStepNameProd.setComponentPopupMenu(popup);
 		
 		textMeaStepNameProd = new JTextField();
 		panel_1.add(textMeaStepNameProd, "cell 3 1,growx");
 		textMeaStepNameProd.setColumns(10);
-		
+		textMeaStepNameProd.setComponentPopupMenu(popup);
 		
 		textMacroProd.setText("");
 		panel_1.add(textMacroProd, "cell 5 1 1 11,grow");
+		textMacroProd.setComponentPopupMenu(popup);
 		
 		JLabel lblYItem = new JLabel("Yield3 Item Name");
 		panel_1.add(lblYItem, "flowx,cell 2 3,alignx center");
@@ -352,7 +327,9 @@ public class YFrame extends JFrame {
 					sigmaItem.add(new JTextField());
 					sigmaItem.add(new JTextField());
 					panel_1.add(sigmaItem.get(++sigmaItemCount * 2 - 2), "cell 2 " + (sigmaItemCount + 3) + ",growx");
+					sigmaItem.get(sigmaItemCount * 2 - 2).setComponentPopupMenu(popup);
 					panel_1.add(sigmaItem.get(sigmaItemCount * 2 - 1), "cell 3 " + (sigmaItemCount + 3) + ",growx");
+					sigmaItem.get(sigmaItemCount * 2 - 1).setComponentPopupMenu(popup);
 
 					sigmaItemComboBox.add(new JComboBox(sigmaItemMenu));
 					sigmaItemOther.add(new JTextField());
@@ -399,35 +376,55 @@ public class YFrame extends JFrame {
 			}
 		});
 		panel_1.add(btnClearAll_1, "cell 5 0,alignx left");
+		//##########	Prod panel ends here	##########
+
+		//##########	Scale Cal panel starts here	##########
+		JPanel panel_2 = new JPanel();
+		tabbedPane.addTab("Scale Calculator", null, panel_2, null);
+		panel_2.setLayout(new MigLayout("", "[][162.00]", "[][][][][][]"));
+		
+		JLabel lblNewControlLimit = new JLabel("New Control Limit");
+		panel_2.add(lblNewControlLimit, "cell 0 0,alignx center");
+		
+		textNewControlLimit = new JTextField();
+		panel_2.add(textNewControlLimit, "cell 1 0,growx");
+		textNewControlLimit.setColumns(10);
 		
 		
-		
-		
-/*		JButton btnAddSigmaItem = new JButton("+");
-		btnAddSigmaItem.addActionListener(new ActionListener() {
+		JButton btnGenerateChartScale = new JButton("Generate Chart Scale");
+		btnGenerateChartScale.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (sigmaItemCount < 2) {
-
-//					below comment is discarded. issue solved by using List
-//					dynamically add new fields like this:
-//					     .add(y3Item_x = new JTextField(),
-//					or, use a HashMap
-//					http://stackoverflow.com/questions/18275360/create-fields-and-methods-dynamically
-
-					sigmaItem.add(new JTextField());
-					sigmaItem.add(new JTextField());
-					panel.add(sigmaItem.get(++sigmaItemCount * 2 - 2), "cell 1 " + (sigmaItemCount + 3) + ",growx");
-					panel.add(sigmaItem.get(sigmaItemCount * 2 - 1), "cell 2 " + (sigmaItemCount + 3) + ",growx");
-					panel.revalidate();
-					validate();
-				}
+				TextProcessor pCl = new TextProcessor(textNewControlLimit.getText());
+				textMacroChartScale.setText(pCl.makeChartScale());
 			}
 		});
-		panel.add(btnAddSigmaItem, "cell 0 6");
-*/		
-
-		JPanel panel_2 = new JPanel();
-		tabbedPane.addTab("New tab", null, panel_2, null);
+		panel_2.add(btnGenerateChartScale, "cell 0 2,alignx center");
+		panel_2.add(textMacroChartScale, "cell 1 2 1 4,grow");
+		
+		JButton btnCopyToClipboard_2 = new JButton("Copy to Clipboard");
+		btnCopyToClipboard_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				StringSelection stringSelection = new StringSelection(textMacroChartScale.getText());
+				Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clpbrd.setContents(stringSelection, null);
+				label_1.setText("copied...");
+			}
+		});
+		panel_2.add(btnCopyToClipboard_2, "cell 0 3,growx");
+		
+		panel_2.add(label_1, "cell 0 4,alignx right");
+		
+		JButton btnClearAll_2 = new JButton("Clear All");
+		btnClearAll_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textNewControlLimit.setText("");
+				textMacroChartScale.setText("");
+				label_1.setText("");
+			}
+		});
+		panel_2.add(btnClearAll_2, "cell 0 5,alignx right");
+		//##########	Scale Cal panel starts here	##########
+		
 		setVisible(true);
 	}
 	

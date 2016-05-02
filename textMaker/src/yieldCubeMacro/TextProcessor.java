@@ -50,6 +50,12 @@ public class TextProcessor {
 	private List<JComboBox> sigmaItemComboBox;
 	private List<JTextField> sigmaItemOther;
 	
+	private String dummyString;
+
+	public TextProcessor(String dummyString) {
+		this.dummyString = dummyString;
+	}
+	
 	public TextProcessor(String textProcessStepNameProd, String textMeaStepNameProd, int sigmaItemCount,
 			List<JTextField> sigmaItem, List<JComboBox> sigmaItemComboBox, List<JTextField> sigmaItemOther) {
 		super();
@@ -79,7 +85,6 @@ public class TextProcessor {
 		this.strTitle = strTitle;
 		this.chckbxFilterFOnly = chckbxFilterFOnly;
 
-//		strThkMeanRefLine = "3;1;1.11";
 		String[] thkMeanRefLineString = strThkMeanRefLine.split(";");
 		Float[] thkMeanRefLineFloat = new Float[thkMeanRefLineString.length];
 		Float max = (float) 0;
@@ -100,9 +105,7 @@ public class TextProcessor {
 		}
 		thkMeanAxisMax = ((Float) (max + ((max - min) / 4))).toString();
 		thkMeanAxisMin = ((Float) (min - ((max - min) / 4))).toString();
-		// System.out.println("y: " + thkMeanAxisMax + " ~ " + thkMeanAxisMin);
 
-//		strThkRangeRefLine = "3;1;1.11";
 		String[] thkRangeRefLineString = strThkRangeRefLine.split(";");
 		Float[] thkRangeRefLineFloat = new Float[thkRangeRefLineString.length];
 		max = (float) 0;
@@ -119,8 +122,6 @@ public class TextProcessor {
 		}
 		thkRangeAxisMax = ((Float) (max + ((max - min) / 4))).toString();
 		thkRangeAxisMin = ((Float) (min - ((max - min) / 4))).toString();
-		// System.out.println("y2: " + thkRangeAxisMax + " ~ " +
-		// thkRangeAxisMin);
 	}
 
 	public String makeMacro() {
@@ -170,22 +171,9 @@ public class TextProcessor {
 		}
 	}
 	
-	
-	
-	
 	public String makeMacroProd() {
 		StringBuffer macro = new StringBuffer("");
-		
-//		macro.append(textProcessStepNameProd + "\n");
-//		macro.append(textMeaStepNameProd + "\n");
-//		for (int i = 1; i <= sigmaItemCount; i++){
-//			macro.append( !sigmaItemComboBox.get(i - 1).getSelectedItem().toString().equalsIgnoreCase("Other") ?
-//					sigmaItemComboBox.get(i - 1).getSelectedItem().toString() + "\n" : 
-//						sigmaItemOther.get(i - 1).getText() + "\n" );
-//			macro.append(sigmaItem.get(i * 2 - 2).getText() + "\n");
-//			macro.append(sigmaItem.get(i * 2 - 1).getText() + "\n");
-//		}
-		
+
 		// Global Query
 		macro.append("//" + textProcessStepNameProd + " - Prod\nGlobalQuery {\n\tKEYLIST=(\n\t\tDesignId=\n\t\t\t\"Z11C\",\n\t\tType=LOT,\n\t\tDayCount=\n\t\t\t\"14\",\n\t\tMfgFacilityId=\n\t\t\t\"FAB 15\",\n\t\t\t\"FAB 16\",\n\t\tMfgProcessStep=\n\t\t\t\"" + textProcessStepNameProd + "\",\n\t\tSource=\n\t\t\t\"Sigma\",\n\t),\n\tSITES=\n\t\tTaichung,\n\t\tHiroshima,\n\tVersion=\"3008.00\",\n\tITEMS=(\n\t\t_ITEM=(\n\t\t\tType=AttrItem,\n\t\t\tItem=\"EquipmentId\",\n\t\t\tLevel=Run,\n\t\t\tDataSource=Sigma,\n\t\t\tStep=\"" + textProcessStepNameProd + "\",\n\t\t),\n\t\t_ITEM=(\n\t\t\tType=AttrItem,\n\t\t\tItem=\"MfgFacilityId\",\n\t\t\tLevel=Run,\n\t\t\tDataSource=Sigma,\n\t\t\tStep=\"" + textProcessStepNameProd + "\",\n\t\t),\n\t\t_ITEM=(\n\t\t\tType=AttrItem,\n\t\t\tItem=\"ProcessEndDateTime\",\n\t\t\tLevel=Run,\n\t\t\tDataSource=Sigma,\n\t\t\tStep=\"" + textProcessStepNameProd + "\",\n\t\t),\n");
 		for (int i = 1; i <= sigmaItemCount; i++){
@@ -208,11 +196,6 @@ public class TextProcessor {
 			} else {
 				macro.append("RenameColumn {\n\tToColumn=\"" + textProcessStepNameProd + " - Prod " + sigmaItemComboBox.get(i - 1).getSelectedItem().toString() + "\",\n\tFromColumn=~*_SYS_GETDATA(match=\"" + sigmaItemBf.toString() + "\",quote=\"false\",data=\"COLUMNNAME\")*,\n};\n");
 			}
-			
-//			String test1 = sigmaItem.get(i * 2 - 1).getText().toString().substring(0, sigmaItem.get(i * 2 - 1).getText().toString().indexOf(';'));
-//			String test2 = sigmaItem.get(i * 2 - 1).getText().toString().substring(sigmaItem.get(i * 2 - 1).getText().toString().lastIndexOf(';') + 1);
-//			System.out.println(test1);
-//			System.out.println(test2);
 		}
 		// Data saving, sorting, renaming
 		
@@ -238,8 +221,8 @@ public class TextProcessor {
 		macro.append("\t),\n\tOPTIONS=(\n\t\tIncludeAllKeyListItems=False,\n\t\tLocation=\n\t\t\t\"C:\\MTApps\\IS_Frontend\\Yield3\\CSVFiles\",\n\t\tInlineParamHeaderType=\n\t\t\t\"REG_LONG\",\n\t\tPullAllWaferRuns=False,\n\t\tShowRework=False,\n\t\tLoadintoY3grid=True,\n\t\tCollateByItem=False,\n\t\tResetItemsGrid=False,\n\t\tFileName=\n\t\t\t\"Request.csv\",\n\t\tPrependPartTypetoLot#=False,\n\t\tKeepOpen/ShortText=False,\n\t\tOverwrite=False,\n\t\tRemoveStaticColumns=False,\n\t\tWithoutDesignsForHeaders=False,\n\t\tCollationDataSource=\n\t\t\t\"Probe ProcessRun\",\n\t\tStaticColumnsFilledPercentage=\n\t\t\t\"100\",\n\t\tResetLotList=False,\n\t\tProbeHeaderType=\n\t\t\t\"SHORT\",\n\t\tExpandLotlistGenealogy=False,\n\t\tRemoveSparseColumns=False,\n\t\tExcludeDeletedStepsFromLotList=False,\n\t\tFinalParamHeaderType=\n\t\t\t\"REG_LONG\",\n\t\tCopytocsvfile=False,\n\t\tCollateByStartLot=False,\n\t\tPullSplits=True,\n\t\tResetGUI=False,\n\t\tSparseColumnsEmptyPercentage=\n\t\t\t\"100\",\n\t\tUseProcessSpec=False,\n\t),\n};\n\n");
 		return macro.toString();
 	}
-	
-	
-	
-	
+
+	public String makeChartScale() {
+		return "\tMin=" + findAxisBounds(dummyString).substring(0, findAxisBounds(dummyString).indexOf(';')) + ",\n\tMax=" + findAxisBounds(dummyString).substring(findAxisBounds(dummyString).lastIndexOf(';') + 1) + ",";
+	}
 }
